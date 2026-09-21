@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body>
+<title>Коробка с иксом</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Neucha&family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@1,400;1,700&display=swap">
+<style>
+:root{
+  --paper:#F5F8FC; --grid:#DFE7F2; --card:#FFFFFF; --line:#C8D3E4;
+  --ink:#1C2840; --muted:#56637E; --accent:#2F5BD3;
+  --box:#F2A73B; --box-edge:#C47F16; --box-ink:#3E2400;
+  --pebble:#6F7C93; --good:#1B8A6B; --good-bg:#E3F5EE; --bad:#C2413A; --bad-bg:#FBE9E7;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#15221D; --grid:#1F3029; --card:#1B2A24; --line:#33483F;
+    --ink:#EAF0EA; --muted:#A6B6AD; --accent:#9DBBFF;
+    --box:#F2B04E; --box-edge:#B77A1C; --box-ink:#3A2200;
+    --pebble:#BAC6BE; --good:#62D3AC; --good-bg:#1D3A30; --bad:#FF8C7C; --bad-bg:#3D2320;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15221D; --grid:#1F3029; --card:#1B2A24; --line:#33483F;
+  --ink:#EAF0EA; --muted:#A6B6AD; --accent:#9DBBFF;
+  --box:#F2B04E; --box-edge:#B77A1C; --box-ink:#3A2200;
+  --pebble:#BAC6BE; --good:#62D3AC; --good-bg:#1D3A30; --bad:#FF8C7C; --bad-bg:#3D2320;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+  font:17px/1.6 "PT Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:28px 64px; display:grid; gap:28px}
+h1,h2{font-family:"Neucha","Comic Sans MS",cursive; font-weight:400; text-wrap:balance; margin:0; line-height:1.15}
+h1{font-size:clamp(2.2rem,7vw,3.2rem)}
+h2{font-size:clamp(1.6rem,5vw,2.1rem)}
+p{margin:0}
+.lead{font-size:1.15rem; color:var(--muted); max-width:60ch}
+section{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 20px; display:grid; gap:14px}
+.tag{font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.x{font-family:"PT Serif",Georgia,serif; font-style:italic; font-weight:700}
+.m{font-family:"PT Serif",Georgia,serif; white-space:nowrap}
+.rule{border-left:4px solid var(--box); padding:10px 14px; background:color-mix(in srgb,var(--box) 12%,var(--card)); border-radius:0 10px 10px 0}
+.rule b{display:block; font-family:"Neucha",cursive; font-weight:400; font-size:1.3rem}
+
+/* коробки и камушки */
+.box{display:inline-grid; place-items:center; width:46px; height:46px; border-radius:8px; background:var(--box); border:2px solid var(--box-edge); color:var(--box-ink); font:italic 700 1.4rem "PT Serif",Georgia,serif; position:relative; flex:none}
+.box::before{content:""; position:absolute; left:-2px; right:-2px; top:9px; height:2px; background:var(--box-edge); opacity:.55}
+.box.open{font:700 1.05rem "PT Sans",sans-serif}
+.pebble{display:inline-block; width:16px; height:16px; border-radius:50%; background:var(--pebble); flex:none}
+.row{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
+.op{font:1.6rem "PT Serif",Georgia,serif; color:var(--muted)}
+
+/* пример "задумал число" */
+.think{display:flex; flex-wrap:wrap; gap:16px; align-items:center}
+.speech{background:var(--paper); border:1px dashed var(--line); border-radius:12px; padding:10px 14px; flex:1 1 260px}
+
+/* x + x = 2x */
+.lab{display:grid; gap:14px; padding:16px; border-radius:12px; background:var(--paper); border:1px solid var(--line)}
+.controls{display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center}
+.controls label{display:flex; align-items:center; gap:10px; cursor:pointer}
+input[type=range]{accent-color:var(--box); width:160px}
+input[type=checkbox]{accent-color:var(--box); width:20px; height:20px}
+.calc{display:grid; gap:6px; font-family:"PT Serif",Georgia,serif; font-size:1.15rem}
+.ok{color:var(--good); font-weight:700}
+.no{color:var(--bad); font-weight:700}
+.compare{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px}
+.compare > div{border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:4px}
+.compare .big{font:italic 700 1.5rem "PT Serif",Georgia,serif}
+
+/* весы */
+.scale{display:grid; gap:0; justify-items:center; padding:8px 0 4px}
+.pans{display:grid; grid-template-columns:1fr 1fr; gap:18px; width:100%}
+.pan{min-height:112px; display:flex; flex-wrap:wrap; align-content:flex-end; justify-content:center; gap:6px; padding:10px; border-bottom:4px solid var(--ink); border-radius:0 0 50% 50% / 0 0 28px 28px; background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.beam{width:100%; height:6px; background:var(--ink); border-radius:3px}
+.post{width:6px; height:34px; background:var(--ink)}
+.base{width:120px; height:8px; background:var(--ink); border-radius:4px}
+.eq{text-align:center; font:700 1.6rem "PT Serif",Georgia,serif; min-height:2.2rem}
+.eq i{font-style:italic}
+.step-text{min-height:3.2em}
+.stepper{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.dots{display:flex; gap:6px; margin-left:auto}
+.dots span{width:10px; height:10px; border-radius:50%; background:var(--line)}
+.dots span.on{background:var(--box)}
+button{font:700 1rem "PT Sans",sans-serif; padding:10px 18px; border-radius:10px; border:2px solid var(--ink); background:var(--card); color:var(--ink); cursor:pointer}
+button.primary{background:var(--ink); color:var(--card)}
+button:disabled{opacity:.35; cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+
+/* задачи */
+.tasks{display:grid; gap:12px}
+.task{border:1px solid var(--line); border-radius:12px; padding:14px; display:grid; gap:10px; background:var(--paper)}
+.task.done{border-color:var(--good); background:var(--good-bg)}
+.task .q{font-size:1.1rem}
+.answer{display:flex; flex-wrap:wrap; gap:8px}
+.answer input[type=text]{font:1.1rem "PT Serif",Georgia,serif; padding:8px 12px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--ink); width:150px}
+.fb{font-weight:700; min-height:1.4em}
+.fb.good{color:var(--good)} .fb.bad{color:var(--bad)}
+.hint{color:var(--muted); font-size:.95rem}
+.score{font-family:"Neucha",cursive; font-size:1.4rem}
+.parent{font-size:.95rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:16px}
+@media (prefers-reduced-motion:no-preference){ .pan > *{animation:drop .35s ease-out} }
+@keyframes drop{from{transform:translateY(-8px)}to{transform:none}}
+</style>
+
+<main class="wrap">
+  <header style="display:grid;gap:10px">
+    <div class="tag">Уравнения · начало</div>
+    <h1>Коробка с иксом</h1>
+    <p class="lead">Что такое неизвестное, почему <span class="x">x</span> + <span class="x">x</span> = 2<span class="x">x</span> и как найти, что спрятано в коробке.</p>
+  </header>
+
+  <!-- 1. Неизвестное -->
+  <section>
+    <div class="tag">Шаг 1</div>
+    <h2>Неизвестное — это закрытая коробка</h2>
+    <p>Неизвестное — это <b>число, которое уже есть, но мы его пока не видим</b>. Как будто кто-то положил камушки в коробку и закрыл крышку. Сколько их там, мы не знаем, поэтому на коробке пишут букву <span class="x">x</span> (читается «икс»).</p>
+    <div class="think">
+      <div class="speech">«Я задумал число, прибавил к нему 5 и получил 12. Какое число я задумал?»</div>
+      <div class="row" aria-label="коробка плюс 5 равно 12">
+        <span class="box">x</span><span class="op">+</span><span class="m" style="font-size:1.5rem">5</span><span class="op">=</span><span class="m" style="font-size:1.5rem">12</span>
+      </div>
+    </div>
+    <p>Буква <span class="x">x</span> — это просто <b>имя</b> для задуманного числа. Главное: в коробке лежит <b>одно конкретное число</b>, оно не меняется посреди задачи. Здесь это 7, потому что 7 + 5 = 12.</p>
+  </section>
+
+  <!-- 2. x + x = 2x -->
+  <section>
+    <div class="tag">Шаг 2</div>
+    <h2>Почему <span class="x">x</span> + <span class="x">x</span> = 2<span class="x">x</span></h2>
+    <p>Вспомни яблоки: <span class="m">3 яблока + 2 яблока = 5 яблок</span>. Мы не знаем, сколько весит яблоко, но считаем штуки. С коробками то же самое: <b>одинаковые коробки можно просто пересчитать</b>.</p>
+    <p>Если в задаче написано <span class="x">x</span> два раза, это две <b>одинаковые</b> коробки: в них лежит одно и то же число. Две одинаковые коробки — это «два икса», коротко 2<span class="x">x</span>. Проверь сам: поменяй число в коробках и загляни внутрь.</p>
+
+    <div class="lab">
+      <div class="controls">
+        <label for="xval">В коробке лежит: <input type="range" id="xval" min="1" max="9" value="4"> <b id="xnum" class="m">4</b></label>
+        <label for="peek"><input type="checkbox" id="peek"> Открыть коробки</label>
+      </div>
+      <div class="row" id="xxrow"></div>
+      <div class="calc" id="xxcalc"></div>
+    </div>
+
+    <div class="rule"><b>Правило</b>Складывать можно только <b>одинаковое</b>: коробки с коробками, камушки с камушками. <span class="m">3<span class="x">x</span> + 2<span class="x">x</span> = 5<span class="x">x</span></span>, как 3 яблока + 2 яблока = 5 яблок.</div>
+
+    <p><b>Ловушка!</b> А вот <span class="m"><span class="x">x</span> + 3</span> — это коробка и три отдельных камушка. Это <b>не</b> 3<span class="x">x</span> и не 4<span class="x">x</span>, это так и остаётся <span class="m"><span class="x">x</span> + 3</span>. Смотри на то же число из ползунка:</p>
+    <div class="compare">
+      <div><span class="hint">коробка и 3 камушка</span><span class="big" id="trapA"></span></div>
+      <div><span class="hint">три коробки</span><span class="big" id="trapB"></span></div>
+    </div>
+    <p class="hint">Числа разные, значит, <span class="m"><span class="x">x</span> + 3 ≠ 3<span class="x">x</span></span>. А если в задаче есть и <span class="x">x</span>, и <span class="x">y</span>, это <b>разные</b> коробки: <span class="m"><span class="x">x</span> + <span class="x">y</span></span> нельзя сложить в 2<span class="x">x</span>.</p>
+  </section>
+
+  <!-- 3. Весы -->
+  <section>
+    <div class="tag">Шаг 3</div>
+    <h2>Уравнение — это весы в равновесии</h2>
+    <p>Знак «=» значит: слева и справа <b>поровну</b>. Чтобы весы не перекосились, всё, что делаешь с одной чашей, делай и с другой. Так и находим, сколько в коробке.</p>
+    <div class="scale" aria-live="polite">
+      <div class="eq" id="eq"></div>
+      <div class="pans"><div class="pan" id="left"></div><div class="pan" id="right"></div></div>
+      <div class="beam"></div><div class="post"></div><div class="base"></div>
+    </div>
+    <p class="step-text" id="stepText"></p>
+    <div class="stepper">
+      <button id="prev" type="button">Назад</button>
+      <button id="next" type="button" class="primary">Дальше</button>
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <!-- 4. Задачи -->
+  <section>
+    <div class="tag">Шаг 4</div>
+    <h2>Попробуй сам</h2>
+    <p class="hint">Икс можно писать английской <b>x</b> или русской <b>х</b>. Если застрял, жми «Подсказка».</p>
+    <div class="tasks" id="tasks"></div>
+    <div class="score" id="score"></div>
+    <p class="parent"><b>Для родителей.</b> Лучшая проверка — попросить объяснить своими словами две вещи: почему <span class="m"><span class="x">x</span> + <span class="x">x</span> = 2<span class="x">x</span></span> и почему <span class="m"><span class="x">x</span> + 3</span> нельзя превратить в 3<span class="x">x</span>. Если ребёнок сам подставит число и покажет, что результаты разные, тема понята.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const X = '<span class="x">x</span>';
+  const box = (open, v) => `<span class="box${open?' open':''}">${open?v:'x'}</span>`;
+  const pebbles = n => Array.from({length:n},()=>'<span class="pebble"></span>').join('');
+
+  /* ---------- x + x = 2x ---------- */
+  function drawXX(){
+    const v = +$('xval').value, open = $('peek').checked;
+    $('xnum').textContent = v;
+    $('xxrow').innerHTML =
+      box(open,v) + '<span class="op">+</span>' + box(open,v) +
+      '<span class="op">=</span>' +
+      '<span class="m" style="font-size:1.5rem">2 ×</span>' + box(open,v);
+    $('xxcalc').innerHTML = open
+      ? `<div>${X} + ${X} = ${v} + ${v} = <b>${2*v}</b></div><div>2${X} = 2 · ${v} = <b>${2*v}</b></div><div class="ok">Одинаково! Так будет при любом числе в коробке.</div>`
+      : `<div class="hint" style="font-family:'PT Sans',sans-serif;font-size:1rem">Коробки закрыты. Но они одинаковые, значит, в них одно и то же число. Открой и проверь.</div>`;
+    $('trapA').innerHTML = `${X} + 3 = ${v} + 3 = ${v+3}`;
+    $('trapB').innerHTML = `3${X} = 3 · ${v} = ${3*v}`;
+  }
+  $('xval').addEventListener('input', drawXX);
+  $('peek').addEventListener('change', drawXX);
+  drawXX();
+
+  /* ---------- весы ---------- */
+  const steps = [
+    { eq:`${X} + ${X} + 4 = 10`, L:[2,4,false], R:10,
+      t:'Слева две одинаковые коробки и 4 камушка, справа 10 камушков. Весы в равновесии.' },
+    { eq:`2${X} + 4 = 10`, L:[2,4,false], R:10,
+      t:'Две одинаковые коробки — это 2x. Записываем короче: 2x + 4 = 10.' },
+    { eq:`2${X} = 10 − 4 = 6`, L:[2,0,false], R:6,
+      t:'Убираем по 4 камушка с КАЖДОЙ чаши. Равновесие не нарушилось: 2x = 6.' },
+    { eq:`${X} = 6 : 2 = 3`, L:[1,0,false], R:3,
+      t:'Две одинаковые коробки весят как 6 камушков. Делим обе чаши пополам: одна коробка = 3 камушка.' },
+    { eq:`3 + 3 + 4 = 10 ✓`, L:[2,4,true], R:10,
+      t:'Проверка: открываем коробки, в каждой по 3. Слева 3 + 3 + 4 = 10, справа 10. Ответ: x = 3.' }
+  ];
+  let s = 0;
+  $('dots').innerHTML = steps.map(()=>'<span></span>').join('');
+  function drawScale(){
+    const st = steps[s], [nb, np, open] = st.L;
+    $('eq').innerHTML = st.eq;
+    $('left').innerHTML = Array.from({length:nb},()=>box(open,3)).join('') + pebbles(np);
+    $('right').innerHTML = pebbles(st.R);
+    $('stepText').textContent = `${s+1} из ${steps.length}. ${st.t}`;
+    $('prev').disabled = s === 0;
+    $('next').textContent = s === steps.length-1 ? 'Сначала' : 'Дальше';
+    [...$('dots').children].forEach((d,i)=>d.classList.toggle('on', i<=s));
+  }
+  $('prev').onclick = () => { if(s>0){s--; drawScale();} };
+  $('next').onclick = () => { s = s === steps.length-1 ? 0 : s+1; drawScale(); };
+  drawScale();
+
+  /* ---------- задачи ---------- */
+  const tasks = [
+    { q:`Упрости: ${X} + ${X} + ${X}`, a:['3x'], hint:'Сколько тут одинаковых коробок?' },
+    { q:`Упрости: 4${X} + 3${X}`, a:['7x'], hint:'4 коробки и ещё 3 коробки — сколько всего коробок?' },
+    { q:`Упрости: 6${X} − 2${X}`, a:['4x'], hint:'Было 6 коробок, 2 убрали.' },
+    { q:`Можно ли упростить ${X} + 5?`, choice:['Да, это 5x','Да, это 6x','Нет, так и остаётся x + 5'], a:2,
+      hint:'Коробка и 5 отдельных камушков — это одинаковые штуки? Подставь x = 1 и x = 2.' },
+    { q:`Реши уравнение: 2${X} = 14`, a:['7'], hint:'Две одинаковые коробки весят 14. Сколько весит одна?' },
+    { q:`Реши уравнение: ${X} + ${X} + 3 = 11`, a:['4'], hint:'Сначала x + x = 2x. Потом убери 3 с обеих сторон.' },
+    { q:`Реши уравнение: 3${X} + ${X} = 20`, a:['5'], hint:'Сколько всего коробок слева? Одинокий x — это 1x.' },
+    { q:`Реши уравнение: 5${X} − 2${X} + 1 = 10`, a:['3'], hint:'5 коробок минус 2 коробки = ? Потом убери 1 с обеих сторон.' }
+  ];
+  const norm = s => s.toLowerCase().replace(/х/g,'x').replace(/[\s*·×]/g,'').replace(/−/g,'-').replace(/^x=/,'').replace(/^1x$/,'x');
+  const solved = new Set();
+  function score(){
+    $('score').textContent = solved.size === tasks.length
+      ? `Все ${tasks.length} из ${tasks.length}! Ты разобрался с коробками.`
+      : `Решено: ${solved.size} из ${tasks.length}`;
+  }
+  $('tasks').innerHTML = tasks.map((t,i)=>`
+    <div class="task" id="t${i}">
+      <div class="q"><b>${i+1}.</b> ${t.q}</div>
+      <div class="answer">${ t.choice
+        ? t.choice.map((c,j)=>`<button type="button" data-i="${i}" data-j="${j}">${c.replace(/x/g,'<span class="x">x</span>')}</button>`).join('')
+        : `<input type="text" id="in${i}" autocomplete="off" inputmode="text" placeholder="ответ" aria-label="Ответ на задачу ${i+1}">
+           <button type="button" class="primary" data-i="${i}">Проверить</button>` }
+        <button type="button" data-hint="${i}">Подсказка</button>
+      </div>
+      <div class="hint" id="h${i}" hidden>💡 ${t.hint}</div>
+      <div class="fb" id="fb${i}"></div>
+    </div>`).join('');
+  function verdict(i, ok){
+    const fb = $('fb'+i);
+    fb.className = 'fb ' + (ok ? 'good' : 'bad');
+    fb.textContent = ok ? 'Верно!' : 'Пока нет. Попробуй ещё раз или открой подсказку.';
+    if(ok){ solved.add(i); $('t'+i).classList.add('done'); score(); }
+  }
+  $('tasks').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.hint !== undefined){ $('h'+b.dataset.hint).hidden = false; return; }
+    const i = +b.dataset.i, t = tasks[i];
+    if(t.choice) verdict(i, +b.dataset.j === t.a);
+    else verdict(i, t.a.includes(norm($('in'+i).value)));
+  });
+  $('tasks').addEventListener('keydown', e=>{
+    if(e.key === 'Enter' && e.target.id.startsWith('in')){
+      const i = +e.target.id.slice(2);
+      verdict(i, tasks[i].a.includes(norm(e.target.value)));
+    }
+  });
+  score();
+})();
+</script>
+
+</body>
+</html>
